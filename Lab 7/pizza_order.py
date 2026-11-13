@@ -2,17 +2,39 @@ TOPPINGS = {"cheese": 40, "olives": 30, "onion": 20, "paneer": 50}
 SIZES = {"S": 8, "M": 10, "L": 12}
 
 def toppings_price(toppings_csv):
+    if not isinstance(toppings_csv, str):
+        return None
+    if not toppings_csv.strip():
+        return 0
     total = 0
     for t in toppings_csv.split(','):
-        total += TOPPINGS[t.strip().lower()]
+        key = t.strip().lower()
+        if not key:
+            continue
+        if key not in TOPPINGS:
+            return None
+        total += TOPPINGS[key]
     return total
 
 def pizza_inches(size):
-    return SIZES[size.strip().upper()]
+    if not isinstance(size, str):
+        return None
+    return SIZES.get(size.strip().upper(), None)
 
 def split_bill(text):
-    total, people = text.split('/')
-    return round(int(total) / int(people), 2)
+    if not isinstance(text, str) or '/' not in text:
+        return None
+    parts = text.split('/')
+    if len(parts) != 2:
+        return None
+    try:
+        total = int(parts[0].strip())
+        people = int(parts[1].strip())
+        if people == 0:
+            return None
+        return round(total / people, 2)
+    except ValueError:
+        return None
 
 def main():
     print("==== Running toppings_price ====")
